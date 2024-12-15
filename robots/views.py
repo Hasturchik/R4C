@@ -4,7 +4,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.dateparse import parse_datetime
 
+from .excel_report import create_excel_report
 from .forms import RobotForm
+from django.http import HttpResponse
 from .models import Robot
 
 
@@ -34,3 +36,17 @@ def create_robot(request):
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
     else:
         return JsonResponse({"error": "Only POST requests are allowed."}, status=405)
+
+@csrf_exempt
+def get_excel_report(request):
+
+    wb = create_excel_report()
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = 'attachment; filename="robot_summary.xlsx"'
+
+    wb.save(response)
+
+    return response
