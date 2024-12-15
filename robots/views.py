@@ -42,6 +42,9 @@ def get_excel_report(request):
 
     wb = create_excel_report()
 
+    if wb is None:
+        return HttpResponse("Nothing produced in the last week", content_type="text/plain")
+    
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
