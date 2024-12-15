@@ -12,6 +12,9 @@ def create_excel_report():
         .annotate(count=Count('id')) \
         .order_by('model', 'version')
 
+    if not robots:
+        return None
+    
     wb = Workbook()
 
     models = set(robot['model'] for robot in robots)
